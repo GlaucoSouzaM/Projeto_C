@@ -2,7 +2,6 @@
 #include <string.h>
 #include "sistema.h"
 
-// Verifica se um médico existe no vetor pelo código e retorna o índice (ou -1 se não achar)
 int buscar_medico_por_codigo(int codigo) {
     for (int i = 0; i < total_medicos; i++) {
         if (medicos[i].codigo == codigo) {
@@ -12,7 +11,6 @@ int buscar_medico_por_codigo(int codigo) {
     return -1;
 }
 
-// Opção 2 do Menu - Cadastrar Médico
 void cadastrar_medico() {
     if (total_medicos >= MAX_MEDICOS) {
         printf("\n[ERRO] Limite maximo de medicos atingido!\n");
@@ -24,7 +22,6 @@ void cadastrar_medico() {
 
     printf("\n--- CADASTRO DE MEDICO (Codigo: %d) ---\n", novo.codigo);
 
-    // Regra de negócio: Todo médico cadastrado deverá possuir nome completo, CRM e especialidade
     do {
         printf("Nome completo (obrigatorio): ");
         ler_texto(novo.nome, sizeof(novo.nome));
@@ -55,13 +52,11 @@ void cadastrar_medico() {
     printf("E-mail: ");
     ler_texto(novo.email, sizeof(novo.email));
 
-    // Salva no vetor de médicos
     medicos[total_medicos] = novo;
     total_medicos++;
 
     printf("\n[SUCESSO] Medico(a) '%s' cadastrado(a) com sucesso! (Codigo: %d)\n", novo.nome, novo.codigo);
 
-    // Pergunta se já deseja cadastrar um horário disponível na agenda desse médico
     char resposta;
     printf("\nDeseja cadastrar um horario disponivel para este medico agora? (S/N): ");
     scanf(" %c", &resposta);
@@ -107,7 +102,6 @@ void cadastrar_medico() {
     }
 }
 
-// Opção 13 do Menu - Listar Médicos Cadastrados
 void listar_medicos() {
     printf("\n--- LISTA DE MEDICOS CADASTRADOS ---\n");
 
@@ -128,4 +122,3 @@ void listar_medicos() {
     printf("----------------------------------------\n");
     printf("Total de medicos: %d\n", total_medicos);
 }
-

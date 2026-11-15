@@ -4,10 +4,6 @@
 #include <locale.h>
 #include "sistema.h"
 
-// ============================================================================
-// DEFINIÇÃO DOS VETORES GLOBAIS E CONTADORES
-// ============================================================================
-
 Paciente pacientes[MAX_PACIENTES];
 int total_pacientes = 0;
 
@@ -23,16 +19,11 @@ int total_agendas = 0;
 Consulta consultas[MAX_CONSULTAS];
 int total_consultas = 0;
 
-// ============================================================================
-// FUNÇÕES AUXILIARES
-// ============================================================================
-
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-// Lê uma string com espaços usando fgets e remove o '\n' do final
 void ler_texto(char *destino, int tamanho) {
     if (fgets(destino, tamanho, stdin) != NULL) {
         size_t len = strlen(destino);
@@ -65,10 +56,6 @@ void exibir_menu() {
     printf("Escolha uma opcao: ");
 }
 
-// ============================================================================
-// FUNÇÃO PRINCIPAL (MAIN)
-// ============================================================================
-
 int main() {
     setlocale(LC_ALL, "Portuguese");
     int opcao = -1;
@@ -94,28 +81,28 @@ int main() {
                 cadastrar_hospital();
                 break;
             case 4:
-                printf("\n[Opcao 4] Consultar medicos disponiveis (Em construcao...)\n");
+                consultar_medicos_disponiveis();
                 break;
             case 5:
-                printf("\n[Opcao 5] Consultar horarios disponiveis (Em construcao...)\n");
+                consultar_horarios_disponiveis();
                 break;
             case 6:
-                printf("\n[Opcao 6] Agendar consulta (Em construcao...)\n");
+                agendar_consulta();
                 break;
             case 7:
-                printf("\n[Opcao 7] Listar consultas agendadas (Em construcao...)\n");
+                listar_consultas();
                 break;
             case 8:
-                printf("\n[Opcao 8] Confirmar consulta (Em construcao...)\n");
+                confirmar_consulta();
                 break;
             case 9:
-                printf("\n[Opcao 9] Reagendar consulta (Em construcao...)\n");
+                reagendar_consulta();
                 break;
             case 10:
-                printf("\n[Opcao 10] Cancelar consulta (Em construcao...)\n");
+                cancelar_consulta();
                 break;
             case 11:
-                printf("\n[Opcao 11] Consultar agenda medica (Em construcao...)\n");
+                consultar_agenda_medica();
                 break;
             case 12:
                 listar_pacientes();

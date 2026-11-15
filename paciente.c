@@ -2,7 +2,6 @@
 #include <string.h>
 #include "sistema.h"
 
-// Verifica se um paciente existe no vetor pelo código e retorna o índice (ou -1 se não achar)
 int buscar_paciente_por_codigo(int codigo) {
     for (int i = 0; i < total_pacientes; i++) {
         if (pacientes[i].codigo == codigo) {
@@ -12,7 +11,6 @@ int buscar_paciente_por_codigo(int codigo) {
     return -1;
 }
 
-// Opção 1 do Menu - Cadastrar Paciente
 void cadastrar_paciente() {
     if (total_pacientes >= MAX_PACIENTES) {
         printf("\n[ERRO] Limite maximo de pacientes atingido!\n");
@@ -20,12 +18,10 @@ void cadastrar_paciente() {
     }
 
     Paciente novo;
-    // Gera um código único sequencial (1, 2, 3...)
     novo.codigo = total_pacientes + 1;
 
     printf("\n--- CADASTRO DE PACIENTE (Codigo: %d) ---\n", novo.codigo);
 
-    // Regra de negócio: não permitir cadastro sem campos obrigatórios
     do {
         printf("Nome completo (obrigatorio): ");
         ler_texto(novo.nome, sizeof(novo.nome));
@@ -64,14 +60,12 @@ void cadastrar_paciente() {
     printf("Endereco: ");
     ler_texto(novo.endereco, sizeof(novo.endereco));
 
-    // Salva no vetor (array) de pacientes
     pacientes[total_pacientes] = novo;
     total_pacientes++;
 
     printf("\n[SUCESSO] Paciente '%s' cadastrado com sucesso! (Codigo: %d)\n", novo.nome, novo.codigo);
 }
 
-// Opção 12 do Menu - Listar Pacientes Cadastrados
 void listar_pacientes() {
     printf("\n--- LISTA DE PACIENTES CADASTRADOS ---\n");
 
@@ -93,4 +87,3 @@ void listar_pacientes() {
     printf("----------------------------------------\n");
     printf("Total de pacientes: %d\n", total_pacientes);
 }
-

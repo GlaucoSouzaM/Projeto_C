@@ -1,14 +1,11 @@
 #ifndef SISTEMA_H
 #define SISTEMA_H
 
-// Limites máximos de armazenamento em arrays
 #define MAX_PACIENTES 100
 #define MAX_MEDICOS 50
 #define MAX_HOSPITAIS 20
 #define MAX_AGENDAS 200
 #define MAX_CONSULTAS 200
-
-// STRUCTS
 
 typedef struct {
     int codigo;
@@ -43,7 +40,7 @@ typedef struct {
     char data_disponivel[15];
     char horario_inicial[10];
     char horario_final[10];
-    char disponibilidade[20]; // "Disponivel" ou "Ocupado"
+    char disponibilidade[20];
 } AgendaMedica;
 
 typedef struct {
@@ -53,11 +50,9 @@ typedef struct {
     int codigo_hospital;
     char data[15];
     char horario[10];
-    char status[20]; // "Agendada", "Confirmada", "Cancelada", "Realizada"
+    char status[20];
     char motivo[200];
 } Consulta;
-
-// VETORES GLOBAIS
 
 extern Paciente pacientes[MAX_PACIENTES];
 extern int total_pacientes;
@@ -74,28 +69,30 @@ extern int total_agendas;
 extern Consulta consultas[MAX_CONSULTAS];
 extern int total_consultas;
 
-// ============================================================================
-// PROTÓTIPOS DAS FUNÇÕES
-// ============================================================================
-
-// Funções utilitárias (em main.c)
 void limpar_buffer();
 void ler_texto(char *destino, int tamanho);
 
-// Funções de Paciente (em paciente.c)
 void cadastrar_paciente();
 void listar_pacientes();
 int buscar_paciente_por_codigo(int codigo);
 
-// Funções de Médico (em medico.c)
 void cadastrar_medico();
 void listar_medicos();
 int buscar_medico_por_codigo(int codigo);
 
-// Funções de Hospital (em hospital.c)
 void cadastrar_hospital();
 void listar_hospitais();
 int buscar_hospital_por_codigo(int codigo);
 
-#endif
+void consultar_medicos_disponiveis();
+void consultar_horarios_disponiveis();
+void consultar_agenda_medica();
 
+void agendar_consulta();
+void listar_consultas();
+void confirmar_consulta();
+void reagendar_consulta();
+void cancelar_consulta();
+int buscar_consulta_por_codigo(int codigo);
+
+#endif
