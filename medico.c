@@ -73,10 +73,7 @@ void cadastrar_medico() {
         nova_agenda.codigo_medico = novo.codigo;
 
         printf("\n--- NOVO HORARIO NA AGENDA (Medico: %s) ---\n", novo.nome);
-        do {
-            printf("Data disponivel (DD/MM/AAAA): ");
-            ler_texto(nova_agenda.data_disponivel, sizeof(nova_agenda.data_disponivel));
-        } while (strlen(nova_agenda.data_disponivel) == 0);
+        escolher_dia_semana(nova_agenda.data_disponivel);
 
         do {
             printf("Horario inicial (HH:MM): ");
@@ -93,7 +90,7 @@ void cadastrar_medico() {
         agendas[total_agendas] = nova_agenda;
         total_agendas++;
 
-        printf("[SUCESSO] Horario %s (%s as %s) adicionado a agenda!\n",
+        printf("[SUCESSO] Dia %s (%s as %s) adicionado a agenda!\n",
                nova_agenda.data_disponivel, nova_agenda.horario_inicial, nova_agenda.horario_final);
 
         printf("\nDeseja adicionar outro horario para este medico? (S/N): ");

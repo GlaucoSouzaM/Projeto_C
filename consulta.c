@@ -20,22 +20,28 @@ void agendar_consulta() {
     }
 
     if (total_pacientes == 0) {
-        printf("\n[AVISO] Nenhum paciente cadastrado. Cadastre um paciente primeiro (Opcao 1).\n");
+        printf("\n[AVISO] Nenhum paciente cadastrado. Cadastre um paciente primeiro.\n");
         return;
     }
 
     if (total_medicos == 0) {
-        printf("\n[AVISO] Nenhum medico cadastrado. Cadastre um medico primeiro (Opcao 2).\n");
+        printf("\n[AVISO] Nenhum medico cadastrado. Cadastre um medico primeiro.\n");
         return;
     }
 
     if (total_hospitais == 0) {
-        printf("\n[AVISO] Nenhum hospital cadastrado. Cadastre um hospital primeiro (Opcao 3).\n");
+        printf("\n[AVISO] Nenhum hospital cadastrado. Cadastre um hospital primeiro.\n");
         return;
     }
 
+    printf("\nPacientes cadastrados:\n");
+    for (int i = 0; i < total_pacientes; i++) {
+        printf("  Codigo: %d | Nome: %s | CPF: %s\n",
+               pacientes[i].codigo, pacientes[i].nome, pacientes[i].cpf);
+    }
+
     int cod_paciente;
-    printf("Informe o codigo do paciente: ");
+    printf("\nInforme o codigo do paciente: ");
     if (scanf("%d", &cod_paciente) != 1) {
         printf("\n[ERRO] Codigo invalido!\n");
         limpar_buffer();
@@ -70,47 +76,6 @@ void agendar_consulta() {
         return;
     }
 
-    printf("\nHorarios disponiveis na agenda do(a) Dr(a). %s:\n", medicos[idx_med].nome);
-    int horarios_livres = 0;
-    for (int i = 0; i < total_agendas; i++) {
-        if (agendas[i].codigo_medico == cod_medico &&
-            strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
-            printf("  Codigo Agenda: %d | Data: %s | Horario: %s as %s\n",
-                   agendas[i].codigo, agendas[i].data_disponivel,
-                   agendas[i].horario_inicial, agendas[i].horario_final);
-            horarios_livres++;
-        }
-    }
-
-    if (horarios_livres == 0) {
-        printf("  [AVISO] Este medico nao possui horarios disponiveis na agenda.\n");
-        return;
-    }
-
-    int cod_agenda;
-    printf("\nInforme o Codigo da Agenda referente ao horario desejado: ");
-    if (scanf("%d", &cod_agenda) != 1) {
-        printf("\n[ERRO] Codigo invalido!\n");
-        limpar_buffer();
-        return;
-    }
-    limpar_buffer();
-
-    int idx_agenda = -1;
-    for (int i = 0; i < total_agendas; i++) {
-        if (agendas[i].codigo == cod_agenda &&
-            agendas[i].codigo_medico == cod_medico &&
-            strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
-            idx_agenda = i;
-            break;
-        }
-    }
-
-    if (idx_agenda == -1) {
-        printf("\n[ERRO] Horario da agenda invalido ou nao esta disponivel!\n");
-        return;
-    }
-
     printf("\nHospitais disponiveis:\n");
     for (int i = 0; i < total_hospitais; i++) {
         printf("  Codigo: %d | Hospital: %s | Endereco: %s\n",
@@ -132,10 +97,73 @@ void agendar_consulta() {
         return;
     }
 
+    char data_escolhida[25];
+    char horario_escolhido[10];
+    int idx_agenda = -1;
+
+    int horarios_livres = 0;
+    for (int i = 0; i < total_agendas; i++) {
+        if (agendas[i].codigo_medico == cod_medico &&
+            strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
+            horarios_livres++;
+        }
+    }
+
+    if (horarios_livres > 0) {
+        printf("\nHorarios pre-cadastrados na agenda do(a) Dr(a). %s:\n", medicos[idx_med].nome);
+        for (int i = 0; i < total_agendas; i++) {
+            if (agendas[i].codigo_medico == cod_medico &&
+                strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
+                printf("  Codigo Agenda: %d | Dia: %s | Horario: %s as %s\n",
+                       agendas[i].codigo, agendas[i].data_disponivel,
+                       agendas[i].horario_inicial, agendas[i].horario_final);
+            }
+        }
+        printf("  0 - Escolher outro dia da semana e horario\n");
+
+        int cod_agenda;
+        printf("\nInforme o Codigo da Agenda (ou 0 para escolher outro dia/horario): ");
+        if (scanf("%d", &cod_agenda) != 1) {
+            printf("\n[ERRO] Codigo invalido!\n");
+            limpar_buffer();
+            return;
+        }
+        limpar_buffer();
+
+        if (cod_agenda != 0) {
+            for (int i = 0; i < total_agendas; i++) {
+                if (agendas[i].codigo == cod_agenda &&
+                    agendas[i].codigo_medico == cod_medico &&
+                    strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
+                    idx_agenda = i;
+                    break;
+                }
+            }
+            if (idx_agenda == -1) {
+                printf("\n[ERRO] Horario da agenda invalido ou indisponivel!\n");
+                return;
+            }
+            strcpy(data_escolhida, agendas[idx_agenda].data_disponivel);
+            strcpy(horario_escolhido, agendas[idx_agenda].horario_inicial);
+        }
+    }
+
+    if (idx_agenda == -1) {
+        escolher_dia_semana(data_escolhida);
+
+        do {
+            printf("Informe o horario da consulta (HH:MM): ");
+            ler_texto(horario_escolhido, sizeof(horario_escolhido));
+            if (strlen(horario_escolhido) == 0) {
+                printf("[AVISO] O horario e obrigatorio!\n");
+            }
+        } while (strlen(horario_escolhido) == 0);
+    }
+
     for (int i = 0; i < total_consultas; i++) {
         if (consultas[i].codigo_medico == cod_medico &&
-            strcmp(consultas[i].data, agendas[idx_agenda].data_disponivel) == 0 &&
-            strcmp(consultas[i].horario, agendas[idx_agenda].horario_inicial) == 0 &&
+            strcmp(consultas[i].data, data_escolhida) == 0 &&
+            strcmp(consultas[i].horario, horario_escolhido) == 0 &&
             strcmp(consultas[i].status, "Cancelada") != 0) {
             printf("\n[ERRO] Conflito de agendamento! O medico ja possui consulta nesta data e horario.\n");
             return;
@@ -147,8 +175,8 @@ void agendar_consulta() {
     nova.codigo_paciente = cod_paciente;
     nova.codigo_medico = cod_medico;
     nova.codigo_hospital = cod_hospital;
-    strcpy(nova.data, agendas[idx_agenda].data_disponivel);
-    strcpy(nova.horario, agendas[idx_agenda].horario_inicial);
+    strcpy(nova.data, data_escolhida);
+    strcpy(nova.horario, horario_escolhido);
     strcpy(nova.status, "Agendada");
 
     printf("Motivo da consulta: ");
@@ -157,7 +185,19 @@ void agendar_consulta() {
         strcpy(nova.motivo, "Consulta de rotina");
     }
 
-    strcpy(agendas[idx_agenda].disponibilidade, "Ocupado");
+    if (idx_agenda != -1) {
+        strcpy(agendas[idx_agenda].disponibilidade, "Ocupado");
+    } else if (total_agendas < MAX_AGENDAS) {
+        AgendaMedica nova_ag;
+        nova_ag.codigo = total_agendas + 1;
+        nova_ag.codigo_medico = cod_medico;
+        strcpy(nova_ag.data_disponivel, data_escolhida);
+        strcpy(nova_ag.horario_inicial, horario_escolhido);
+        strcpy(nova_ag.horario_final, horario_escolhido);
+        strcpy(nova_ag.disponibilidade, "Ocupado");
+        agendas[total_agendas] = nova_ag;
+        total_agendas++;
+    }
 
     consultas[total_consultas] = nova;
     total_consultas++;
@@ -207,8 +247,10 @@ void confirmar_consulta() {
         return;
     }
 
+    listar_consultas();
+
     int cod_consulta;
-    printf("Informe o codigo da consulta que deseja confirmar: ");
+    printf("\nInforme o codigo da consulta que deseja confirmar: ");
     if (scanf("%d", &cod_consulta) != 1) {
         printf("\n[ERRO] Codigo invalido!\n");
         limpar_buffer();
@@ -240,8 +282,10 @@ void reagendar_consulta() {
         return;
     }
 
+    listar_consultas();
+
     int cod_consulta;
-    printf("Informe o codigo da consulta que deseja reagendar: ");
+    printf("\nInforme o codigo da consulta que deseja reagendar: ");
     if (scanf("%d", &cod_consulta) != 1) {
         printf("\n[ERRO] Codigo invalido!\n");
         limpar_buffer();
@@ -261,49 +305,28 @@ void reagendar_consulta() {
     }
 
     int cod_medico = consultas[idx].codigo_medico;
-    int idx_med = buscar_medico_por_codigo(cod_medico);
+    char nova_data[25];
+    char novo_horario[10];
 
-    printf("\nHorarios disponiveis na agenda do(a) medico(a) %s:\n",
-           idx_med != -1 ? medicos[idx_med].nome : "Desconhecido");
+    escolher_dia_semana(nova_data);
 
-    int horarios_livres = 0;
-    for (int i = 0; i < total_agendas; i++) {
-        if (agendas[i].codigo_medico == cod_medico &&
-            strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
-            printf("  Codigo Agenda: %d | Data: %s | Horario: %s as %s\n",
-                   agendas[i].codigo, agendas[i].data_disponivel,
-                   agendas[i].horario_inicial, agendas[i].horario_final);
-            horarios_livres++;
+    do {
+        printf("Informe o novo horario da consulta (HH:MM): ");
+        ler_texto(novo_horario, sizeof(novo_horario));
+        if (strlen(novo_horario) == 0) {
+            printf("[AVISO] O novo horario e obrigatorio!\n");
         }
-    }
+    } while (strlen(novo_horario) == 0);
 
-    if (horarios_livres == 0) {
-        printf("  [AVISO] Nao ha outros horarios disponiveis na agenda deste medico para reagendamento.\n");
-        return;
-    }
-
-    int cod_nova_agenda;
-    printf("\nInforme o Codigo da Agenda para a nova data e horario: ");
-    if (scanf("%d", &cod_nova_agenda) != 1) {
-        printf("\n[ERRO] Codigo invalido!\n");
-        limpar_buffer();
-        return;
-    }
-    limpar_buffer();
-
-    int idx_nova_agenda = -1;
-    for (int i = 0; i < total_agendas; i++) {
-        if (agendas[i].codigo == cod_nova_agenda &&
-            agendas[i].codigo_medico == cod_medico &&
-            strcmp(agendas[i].disponibilidade, "Disponivel") == 0) {
-            idx_nova_agenda = i;
-            break;
+    for (int i = 0; i < total_consultas; i++) {
+        if (i != idx &&
+            consultas[i].codigo_medico == cod_medico &&
+            strcmp(consultas[i].data, nova_data) == 0 &&
+            strcmp(consultas[i].horario, novo_horario) == 0 &&
+            strcmp(consultas[i].status, "Cancelada") != 0) {
+            printf("\n[ERRO] Conflito! O medico ja possui outra consulta em %s as %s.\n", nova_data, novo_horario);
+            return;
         }
-    }
-
-    if (idx_nova_agenda == -1) {
-        printf("\n[ERRO] Codigo da agenda invalido ou horario indisponivel!\n");
-        return;
     }
 
     for (int i = 0; i < total_agendas; i++) {
@@ -315,9 +338,8 @@ void reagendar_consulta() {
         }
     }
 
-    strcpy(agendas[idx_nova_agenda].disponibilidade, "Ocupado");
-    strcpy(consultas[idx].data, agendas[idx_nova_agenda].data_disponivel);
-    strcpy(consultas[idx].horario, agendas[idx_nova_agenda].horario_inicial);
+    strcpy(consultas[idx].data, nova_data);
+    strcpy(consultas[idx].horario, novo_horario);
     strcpy(consultas[idx].status, "Agendada");
 
     printf("\n[SUCESSO] Consulta (Codigo: %d) reagendada para %s as %s!\n",
@@ -332,8 +354,10 @@ void cancelar_consulta() {
         return;
     }
 
+    listar_consultas();
+
     int cod_consulta;
-    printf("Informe o codigo da consulta que deseja cancelar: ");
+    printf("\nInforme o codigo da consulta que deseja cancelar: ");
     if (scanf("%d", &cod_consulta) != 1) {
         printf("\n[ERRO] Codigo invalido!\n");
         limpar_buffer();
@@ -376,4 +400,3 @@ void cancelar_consulta() {
 
     printf("\n[SUCESSO] Consulta cancelada com sucesso! O horario foi liberado na agenda do medico.\n");
 }
-

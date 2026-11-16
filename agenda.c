@@ -59,7 +59,7 @@ void consultar_horarios_disponiveis() {
             printf("----------------------------------------\n");
             printf("Codigo da Agenda: %d\n", agendas[i].codigo);
             printf("Medico:           %s (Codigo: %d - %s)\n", nome_medico, agendas[i].codigo_medico, especialidade);
-            printf("Data:             %s\n", agendas[i].data_disponivel);
+            printf("Dia da semana:    %s\n", agendas[i].data_disponivel);
             printf("Horario:          %s as %s\n", agendas[i].horario_inicial, agendas[i].horario_final);
             printf("Status:           %s\n", agendas[i].disponibilidade);
             encontrou = 1;
@@ -103,10 +103,7 @@ void consultar_horarios_disponiveis() {
             nova_agenda.codigo = total_agendas + 1;
             nova_agenda.codigo_medico = cod_med;
 
-            do {
-                printf("Data disponivel (DD/MM/AAAA): ");
-                ler_texto(nova_agenda.data_disponivel, sizeof(nova_agenda.data_disponivel));
-            } while (strlen(nova_agenda.data_disponivel) == 0);
+            escolher_dia_semana(nova_agenda.data_disponivel);
 
             do {
                 printf("Horario inicial (HH:MM): ");
@@ -123,7 +120,8 @@ void consultar_horarios_disponiveis() {
             agendas[total_agendas] = nova_agenda;
             total_agendas++;
 
-            printf("\n[SUCESSO] Horario adicionado para o(a) medico(a) %s!\n", medicos[idx_med].nome);
+            printf("\n[SUCESSO] Horario (%s) adicionado para o(a) medico(a) %s!\n",
+                   nova_agenda.data_disponivel, medicos[idx_med].nome);
         }
     }
 }
@@ -158,7 +156,7 @@ void consultar_agenda_medica() {
     int achou_horario = 0;
     for (int i = 0; i < total_agendas; i++) {
         if (agendas[i].codigo_medico == cod_medico) {
-            printf("  - Codigo Agenda %d | Data: %s | Horario: %s as %s | Status: %s\n",
+            printf("  - Codigo Agenda %d | Dia: %s | Horario: %s as %s | Status: %s\n",
                    agendas[i].codigo, agendas[i].data_disponivel,
                    agendas[i].horario_inicial, agendas[i].horario_final,
                    agendas[i].disponibilidade);

@@ -37,7 +37,7 @@ typedef struct {
 typedef struct {
     int codigo;
     int codigo_medico;
-    char data_disponivel[15];
+    char data_disponivel[25];
     char horario_inicial[10];
     char horario_final[10];
     char disponibilidade[20];
@@ -48,7 +48,7 @@ typedef struct {
     int codigo_paciente;
     int codigo_medico;
     int codigo_hospital;
-    char data[15];
+    char data[25];
     char horario[10];
     char status[20];
     char motivo[200];
@@ -71,6 +71,7 @@ extern int total_consultas;
 
 void limpar_buffer();
 void ler_texto(char *destino, int tamanho);
+void escolher_dia_semana(char *destino);
 
 void cadastrar_paciente();
 void listar_pacientes();
@@ -94,5 +95,8 @@ void confirmar_consulta();
 void reagendar_consulta();
 void cancelar_consulta();
 int buscar_consulta_por_codigo(int codigo);
+
+void salvaDadosNoArquivo();
+void carregaDadosDoArquivo();
 
 #endif
